@@ -1,22 +1,36 @@
 // import React from 'react';
 
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Provider/Authprovider";
+
 // import { Result } from "postcss";
 
 const Login = () => {
-    const {signInUser}=useContext(AuthContext)
-    const handleLogin= e=>{
+    const { signInUser,signInWithGoogle } = useContext(AuthContext)
+    const navigate = useNavigate()
+    const handleLogin = e => {
         e.preventDefault();
-        const email =e.target.email.value;
-        const password =e.target.password.value;
-        console.log(email,password);
-        signInUser(email,password)
-        .then(Result=>{
-            console.log(Result);
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+        console.log(email, password);
+        signInUser(email, password)
+            .then(Result => {
+                console.log(Result);
+                e.target.reset();
+                navigate('/')
+            })
+            .catch(error => {
+                console.error(error);
+            })
+    }
+
+    const handleGoogleSignIn=()=>{
+        signInWithGoogle()
+        .then(result=>{
+            console.log(result.user);
         })
-        .catch(error=>{
+        .catch(error => {
             console.error(error);
         })
     }
@@ -39,7 +53,7 @@ const Login = () => {
                                 <label className="label">
                                     <span className="label-text">Password</span>
                                 </label>
-                                <input type="password" name="password"  required placeholder="password" className="input input-bordered" />
+                                <input type="password" name="password" required placeholder="password" className="input input-bordered" />
                                 <label className="label">
                                     <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                                 </label>
@@ -48,11 +62,12 @@ const Login = () => {
                                 <button className="btn btn-primary">Login</button>
                             </div>
                         </form>
-                        <p>New to Mohamilon? Please 
+                        <p>New to Mohamilon? Please
                             <Link to='/register'>
-<button className="btn btn-link">Register</button>
-                        </Link>
+                                <button className="btn btn-link">Register</button>
+                            </Link>
                         </p>
+                        <p><button onClick={handleGoogleSignIn} className="btn btn-ghost">GOOGLE</button></p>
                     </div>
                 </div>
             </div>
